@@ -1,51 +1,56 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie/screens/listscreen.dart';
+import 'package:movie/screens/secondscreen.dart';
 
+import '../widget/movielist.dart';
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+class SearchScreen extends StatelessWidget {
+  final List list;
 
-  @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
+  const SearchScreen({super.key, required this.list});
 
-class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(      
+    return SafeArea(
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 129, 121, 121),
-      // appBar: AppBar(actions: [
-      //   TextField(
-          
-      //   ),
-      // ]),
-      body: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  IconButton(onPressed: (){
-                    setState(() {
-                       Navigator.pop(
-                   context,
-                     MaterialPageRoute(builder: (context) => const Listscreen()),
-                    );
-                    });
-                  }, icon: Icon(Icons.arrow_back,color: Colors.white,)),
-                  SizedBox(width: 10,),
-
-                  Column(
-                    children: [
-                      SizedBox(height: 12,),
-                      Text("Home",style: GoogleFonts.poppins(
-                        color: Colors.white
-                      )),
-                    ],
-                  )
-                ],
+        body: Column(children: [
+          Padding(
+            padding:  EdgeInsets.all(12.0),
+            child: TextFormField(
+              decoration:  InputDecoration(
+                
+                border: UnderlineInputBorder(),
+                hintText: 'Search movie',
+                hintStyle: GoogleFonts.poppins()
               ),
-    
-    ));
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height *.8,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => DemoScreen(
+                                indexnumber: index,
+                                url: "http://image.tmdb.org/t/p/w500" +
+                                    list[index]['poster_path'],
+                                description: list[index]
+                                    ["overview"],
+                                title: list[index]['title'],
+                              ))),
+                      child: movielist(
+                        number: index,
+                        list: list,
+                        indexNumber: index,
+                      ));
+                }),
+          )
+        ]),
+      ),
+    );
   }
 }
